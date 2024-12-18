@@ -1,6 +1,7 @@
 import Foundation
 import SwiftKuery
 
+
 class Filmes: Table {
     let tableName: String = "filme"
     let idFilme = Column("idFilme", Int32.self,  autoIncrement: true, primaryKey: true, notNull: true)

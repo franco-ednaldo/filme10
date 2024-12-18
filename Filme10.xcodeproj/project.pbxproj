@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		891180D12D12F047000260CE /* SwiftKueryMySQL in Frameworks */ = {isa = PBXBuildFile; productRef = 891180D02D12F047000260CE /* SwiftKueryMySQL */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		891180B22D12E16E000260CE /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -35,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				891180D12D12F047000260CE /* SwiftKueryMySQL in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +82,7 @@
 			);
 			name = Filme10;
 			packageProductDependencies = (
+				891180D02D12F047000260CE /* SwiftKueryMySQL */,
 			);
 			productName = Filme10;
 			productReference = 891180B42D12E16E000260CE /* Filme10 */;
@@ -107,7 +113,7 @@
 			mainGroup = 891180AB2D12E16E000260CE;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				891180BE2D12E204000260CE /* XCRemoteSwiftPackageReference "SwiftKueryMySQL" */,
+				891180CF2D12F047000260CE /* XCRemoteSwiftPackageReference "SwiftKueryMySQL" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 891180B52D12E16E000260CE /* Products */;
@@ -296,7 +302,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		891180BE2D12E204000260CE /* XCRemoteSwiftPackageReference "SwiftKueryMySQL" */ = {
+		891180CF2D12F047000260CE /* XCRemoteSwiftPackageReference "SwiftKueryMySQL" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Kitura/SwiftKueryMySQL";
 			requirement = {
@@ -305,6 +311,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		891180D02D12F047000260CE /* SwiftKueryMySQL */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 891180CF2D12F047000260CE /* XCRemoteSwiftPackageReference "SwiftKueryMySQL" */;
+			productName = SwiftKueryMySQL;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 891180AC2D12E16E000260CE /* Project object */;
 }
