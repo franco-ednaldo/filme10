@@ -2,26 +2,30 @@ import Foundation
 import SwiftKuery
 import SwiftKueryMySQL
 
+// Classe utilitária para gerenciar conexões e executar operações no banco de dados
 class CommonUtils {
-    private var pool: ConnectionPool?
-    private var connection: Connection?
-    static let sharedInstance = CommonUtils()
+    private var pool: ConnectionPool? // Pool de conexões para reutilização de conexões ao banco de dados
+    private var connection: Connection? // Conexão única ao banco de dados
+    static let sharedInstance = CommonUtils() // Singleton para acessar esta classe em toda a aplicação
     
     private init() {
-        
+        // Construtor privado para implementar o padrão Singleton
     }
     
+    // Método para inicializar e retornar um pool de conexões ao banco de dados
     private func getConnectionPool(characterSet: String? = nil) throws -> ConnectionPool {
         if let pool = pool {
-            return pool
+            return pool // Retorna o pool existente se já estiver inicializado
         }
         
         do {
+            // Localiza o arquivo connection.json e carrega os dados de configuração
             let connectionFile = #file.replacingOccurrences(of: "Utils.swift", with: "connection.json")
-            let data = Data(referencing: try NSData(contentsOfFile: connectionFile)) // le o arquivo json
+            let data = Data(referencing: try NSData(contentsOfFile: connectionFile)) // Lê o arquivo JSON
             let json = try JSONSerialization.jsonObject(with: data)
             
             if let dictionary = json as? [String: String] {
+                // Lê as informações do JSON
                 let host = dictionary["host"]
                 let user = dictionary["user"]
                 let password = dictionary["password"]
@@ -29,12 +33,14 @@ class CommonUtils {
                 
                 var port: Int? = nil
                 if let portString = dictionary["port"] {
-                    port = Int(portString)
+                    port = Int(portString) // Converte a porta para inteiro, se disponível
                 }
-                let randomBinary = arc4random_uniform(2)
-                let poolOptions = ConnectionPoolOptions(initialCapacity: 1, maxCapacity: 1)
+                
+                let randomBinary = arc4random_uniform(2) // Gera um valor aleatório entre 0 e 1
+                let poolOptions = ConnectionPoolOptions(initialCapacity: 1, maxCapacity: 1) // Configurações do pool
                 
                 if characterSet != nil || randomBinary == 0 {
+                    // Cria o pool de conexões usando os parâmetros fornecidos
                     pool = MySQLConnection.createPool(host: host,
                                                       user: user,
                                                       password: password,
@@ -44,7 +50,7 @@ class CommonUtils {
                                                       connectionTimeout: 10000,
                                                       poolOptions: poolOptions)
                 } else {
-                    // "mysql://username:password@host:port/database"
+                    // Alternativamente, constrói a URL de conexão
                     var url = "mysql://"
                     if let username = user, let password = password {
                         url += "\(username):\(password)@"
@@ -66,13 +72,11 @@ class CommonUtils {
                         pool = nil
                         print("Invalid URL: \(url)")
                     }
-                    
                 }
             } else {
                 pool = nil
-                print("Invalid json: \(json)")
+                print("Invalid JSON: \(json)")
             }
-            
         } catch {
             print("Error reading connection.json")
             pool = nil
@@ -81,7 +85,7 @@ class CommonUtils {
         return pool!
     }
     
-    
+    // Obtém ou inicializa uma conexão com o banco de dados
     func getConnection() -> Connection? {
         if let connection = connection {
             return connection
@@ -90,29 +94,29 @@ class CommonUtils {
         self.connection = nil
         
         do {
-            try getConnectionPool().getConnection{connection, error in
+            try getConnectionPool().getConnection { connection, error in
                 guard let connection = connection else {
-                    guard let error else {
-                        return print("Error ao connectar no banco \(error?.localizedDescription ?? "Erro desconhecido")")
-                    }
-                    return print("Error ao connectar no banco \(error.localizedDescription ?? "Erro desconhecido")")
+                    // Trata erro ao conectar no banco de dados
+                    print("Erro ao conectar no banco: \(error?.localizedDescription ?? "Erro desconhecido")")
+                    return
                 }
                 self.connection = connection
-                return print("Conectado ao banco")
+                print("Conectado ao banco")
             }
             
             return connection
         } catch {
             return nil
         }
-        
     }
     
-    func criaTabela(_ tabela:Table) {
+    // Cria uma tabela no banco de dados
+    func criaTabela(_ tabela: Table) {
         let thread = DispatchGroup()
         thread.enter()
         guard let con = getConnection() else {
-            return print("Sem conexao")
+            print("Sem conexão")
+            return
         }
         
         tabela.create(connection: con) { result in
@@ -122,31 +126,32 @@ class CommonUtils {
             thread.leave()
         }
         
-        thread.wait()
+        thread.wait() // Aguarda o término da operação
     }
     
+    // Executa uma query genérica no banco de dados
     func executaQuery(_ query: Query) {
         let thread = DispatchGroup()
         thread.enter()
         if let connection = getConnection() {
-            connection.execute(query: query) {
-                result in
-                var nomeQuery = String(describing: type (of: query))
+            connection.execute(query: query) { result in
+                var nomeQuery = String(describing: type(of: query))
                 if nomeQuery == "Raw" {
-                    nomeQuery = String(describing: query.self).split(separator:"\"")[1].split(separator: "")[0].capitalized
+                    nomeQuery = String(describing: query.self).split(separator: "\"")[1].split(separator: "")[0].capitalized
                 }
                 if let erro = result.asError {
-                    print("\(nomeQuery), Falha de execucao: \(erro)")
+                    print("\(nomeQuery), Falha de execução: \(erro)")
                 }
                 thread.leave()
             }
         } else {
-            print("Sem conexao")
+            print("Sem conexão")
             thread.leave()
         }
-        thread.wait()
+        thread.wait() // Aguarda o término da operação
     }
     
+    // Executa uma consulta SELECT e retorna os resultados
     func executaSelect(_ query: Select, aoFinal: @escaping ([[Any?]]?) -> ()) {
         let thread = DispatchGroup()
         thread.enter()
@@ -174,16 +179,17 @@ class CommonUtils {
                 }
             }
         } else {
-            print("Sem Conexão")
+            print("Sem conexão")
             thread.leave()
         }
         
         thread.wait()
-        aoFinal(registros)
+        aoFinal(registros) // Retorna os resultados ao final da execução
     }
 
-    
+    // Remove uma tabela do banco de dados
     func removeTabela(_ tabela: Table) {
         executaQuery(tabela.drop())
     }
 }
+
