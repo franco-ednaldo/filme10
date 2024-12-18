@@ -1,0 +1,42 @@
+{
+  "originHash" : "67bc78be3fbb475177a021cb6c7d3a76868820565dac8c0deaa2061eae30be2e",
+  "pins" : [
+    {
+      "identity" : "loggerapi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kitura/LoggerAPI.git",
+      "state" : {
+        "revision" : "e82d34eab3f0b05391082b11ea07d3b70d2f65bb",
+        "version" : "1.9.200"
+      }
+    },
+    {
+      "identity" : "swift-kuery",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/IBM-Swift/Swift-Kuery.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "b9f53552fadf85ac0782dce4f9880d9d8189a4b3"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "96a2f8a0fa41e9e09af4585e2724c4e825410b91",
+        "version" : "1.6.2"
+      }
+    },
+    {
+      "identity" : "swiftkuerymysql",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kitura/SwiftKueryMySQL",
+      "state" : {
+        "branch" : "master",
+        "revision" : "ad6355e6fe75149efc5dc270f726edf8af867944"
+      }
+    }
+  ],
+  "version" : 3
+}
