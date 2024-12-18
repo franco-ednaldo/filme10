@@ -10,8 +10,8 @@ import SwiftKuery
 
 
 
-//let utils = CommonUtils.sharedInstance
-//
+let utils = CommonUtils.sharedInstance
+
 //let filmes = Filmes ()
 //utils.criaTabela (filmes)
 //print("Tabela Filme Criada")
@@ -39,3 +39,50 @@ import SwiftKuery
 //]
 //utils.executaQuery (Insert(into: Elencos (), rows: listaElenco.map {$0.colunas}))
 //print("Os registros de Elencos foram inseridos")
+//
+//
+//utils.executaQuery (Update(elencos, set: [(elencos.ator, "Felipe Santos"), (elencos.idade, 29)], where: elencos.idElenco == 1))
+//print("Alterado o nome e idade do Felipe")
+//
+//utils.executaQuery(Delete(from:elencos).where(elencos.idElenco == 4))
+//print("Ator excluido do banco - Robert")
+
+
+func consulta(_ select: Select) {
+    let utils = CommonUtils.sharedInstance
+    utils.executaSelect(select) { registros in
+        guard let registros = registros else {
+            return print("Sem registros")
+        }
+        registros.forEach { linha in
+            linha.forEach { item in
+                print("\(item ?? "")".fill(), terminator: " ")
+            }
+            print()
+        }
+    }
+}
+
+public extension String {
+    func fill(to: Int = 20) -> String {
+        var saida = self
+        if self.count < to {
+            for _ in 0..<(to - self.count) {
+                saida += " "
+            }
+        }
+        return saida
+    }
+}
+
+consulta(
+    Select(
+        elencos.ator,
+        filmes.titulo,
+        filmes.ano,
+        from: elencos
+    )
+    .join(filmes)
+    .on(elencos.idFilme == filmes.idFilme)
+)
+
